@@ -1,6 +1,6 @@
-package com.yootiful.functioncalling.service;
+package com.yootiful.service;
 
-import models.Quotation;
+import com.yootiful.models.Quotation;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 

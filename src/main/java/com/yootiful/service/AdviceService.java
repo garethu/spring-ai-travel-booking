@@ -1,4 +1,4 @@
-package com.yootiful.functioncalling.service;
+package com.yootiful.service;
 
 import org.springframework.ai.chat.messages.Message;
 import org.springframework.ai.chat.messages.SystemMessage;
@@ -15,7 +15,6 @@ import java.util.List;
 @Service
 public class AdviceService {
     private final OllamaChatModel chatModel;
-
     public AdviceService(OllamaChatModel chatModel) {
         this.chatModel = chatModel;
     }

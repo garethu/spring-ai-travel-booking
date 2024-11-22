@@ -1,4 +1,4 @@
-package models;
+package com.yootiful.models;
 
 public record Quotation(String symbol,
                         String name,

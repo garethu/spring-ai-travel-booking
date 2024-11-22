@@ -1,8 +1,14 @@
-package com.yootiful.functioncalling.config;
+package com.yootiful.config;
 
-import com.yootiful.functioncalling.service.QuotationFunction;
-import com.yootiful.functioncalling.service.QuotationService;
-import models.Quotation;
+import com.yootiful.entities.Booking;
+import com.yootiful.mapper.BookingMapper;
+import com.yootiful.service.*;
+import com.yootiful.models.BookingRecord;
+import com.yootiful.models.Quotation;
+import org.springframework.ai.chat.memory.ChatMemory;
+import org.springframework.ai.chat.memory.InMemoryChatMemory;
+import org.springframework.ai.chat.model.ChatModel;
+import org.springframework.ai.ollama.OllamaChatModel;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,12 +29,40 @@ public class BeanProvider {
     @Description("Provides the current quotation of a cryptocurrency by symbol")
     public Function<QuotationFunction.Request, Quotation> getQuotation(QuotationService quotationService) {
         return request -> {
-            System.out.println("### GRU Yippee ki yay, the quotation function is called with value: " + request.symbol() );
             try {
                 return quotationService.fetch(request.symbol());
             }
             catch (Exception e) {
                 return new Quotation(null,null,0.0,0.0,0.0);
+            }
+        };
+    }
+    @Bean
+    @Description("Get the booking details")
+    public Function<BookingFunction.Request, BookingRecord> getBookingDetails(BookingService bookingService) {
+        System.out.println("###### Getting the booking details ######");
+        return request -> {
+            try {
+                Booking booking = bookingService.getBookingByIdAndFirstNameAndLastName(request.id(), request.firstName(), request.lastName());
+                return BookingMapper.toRecord(booking);
+            }
+            catch (Exception e) {
+                return new BookingRecord(null,null,null,null,null,null ,null,null);
+            }
+        };
+    }
+
+    @Bean
+    @Description("Cancel the booking")
+    public Function<BookingCancelFunction.Request, BookingRecord> cancelBooking(BookingService bookingService) {
+        System.out.println("###### Cancel the booking ######");
+        return request -> {
+            try {
+                Booking booking = bookingService.deleteBooking(request.id());
+                return BookingMapper.toRecord(booking);
+            }
+            catch (Exception e) {
+                return new BookingRecord(null,null,null,null,null,null ,null,null);
             }
         };
     }
@@ -62,4 +96,9 @@ public class BeanProvider {
         } catch (Exception e) {
         }
     }
+
+ /*   @Bean
+    public ChatMemory chatMemory() {
+        return new InMemoryChatMemory();
+    }*/
 }
